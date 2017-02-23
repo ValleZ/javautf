@@ -9,7 +9,7 @@ import (
 
 func TestAscii(t *testing.T) {
 	inp := "hello"
-	result, err := ReadUTFBytes(bytes.NewReader([]byte(inp)), len(inp))
+	result, err := readUTFBytes(bytes.NewReader([]byte(inp)), len(inp))
 	if err != nil {
 		t.Error("expected", inp, " error ", err)
 	}
@@ -89,5 +89,19 @@ func TestAll(t *testing.T) {
 	}
 	if strings.Compare(result, inp) != 0 {
 		t.Error("expected", inp, "got", result)
+	}
+}
+
+func TestAllRegularUtf8(t *testing.T) {
+	inpBytes, ok := hex.DecodeString("F0A4ADA230E282ACE8BDAEE58A9FED959CEAB5ADD0B9D0AF7A2D00F09090B7")
+	if ok != nil {
+		t.Error("bad hex")
+	}
+	_, err := readUTFBytes(bytes.NewReader(inpBytes), len(inpBytes))
+	if err == nil {
+		t.Error("expected to throw error since it's regular UTF created by str.getBytes(StandardCharsets.UTF_8)")
+	}
+	if strings.Compare(string(inpBytes), "𤭢0€轮功한국йЯz-\x00𐐷") != 0 {
+		t.Error("unexpected input")
 	}
 }

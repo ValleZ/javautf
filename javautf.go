@@ -14,10 +14,10 @@ func ReadUTF(reader *bytes.Reader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return ReadUTFBytes(reader, int(utfLen))
+	return readUTFBytes(reader, int(utfLen))
 }
 
-func ReadUTFBytes(reader *bytes.Reader, utfLen int) (string, error) {
+func readUTFBytes(reader *bytes.Reader, utfLen int) (string, error) {
 	byteArr := make([]byte, utfLen)
 	_, err := reader.Read(byteArr)
 	if err != nil {
@@ -77,7 +77,7 @@ func ReadUTFBytes(reader *bytes.Reader, utfLen int) (string, error) {
 				}
 			}
 		} else {
-			return charArr.String(), &errorString{"malformed input"}
+			return charArr.String(), &errorString{"malformed input, maybe it's regular UTF-8?"}
 		}
 	}
 	return charArr.String(), nil
