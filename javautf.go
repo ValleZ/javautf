@@ -3,12 +3,13 @@ package javautf
 import (
 	"bytes"
 	"encoding/binary"
+	"io"
 )
 
 const surrogateMin = 0xD800
 const surrogateMax = 0xDFFF
 
-func ReadUTF(reader *bytes.Reader) (string, error) {
+func ReadUTF(reader io.Reader) (string, error) {
 	var utfLen uint16
 	err := binary.Read(reader, binary.BigEndian, &utfLen)
 	if err != nil {
@@ -17,7 +18,7 @@ func ReadUTF(reader *bytes.Reader) (string, error) {
 	return readUTFBytes(reader, int(utfLen))
 }
 
-func readUTFBytes(reader *bytes.Reader, utfLen int) (string, error) {
+func readUTFBytes(reader io.Reader, utfLen int) (string, error) {
 	byteArr := make([]byte, utfLen)
 	_, err := reader.Read(byteArr)
 	if err != nil {
